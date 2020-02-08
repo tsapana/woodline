@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<link rel="icon" href="content/img/logo_sm.jpg">
+		<title>Woodline</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="msapplication-tap-highlight" content="no">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="styles.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="styles.css">
+	</head>
+
+    <body>
+		<section id="app">
+			<header class="header">
+				<nav class="header__top">
+					<div class="container">
+						<div class="header__find-author">woodline studio</div>
+						<a href="#" title="Home" class="header-logo header-logo__icon ">
+						</a>
+					</div>
+				</nav>
+
+				<nav class="header__bottom">
+					<div class="container">
+						<ul class="header-menu">
+							<li class="header-menu__item">
+								<a href="#" class="header-menu__link icon-home">
+									<svg role="img" class="header-menu__home">
+										<use xlink:href="#icon-home_new" xmlns:xlink="http://www.w3.org/1999/xlink" ></use>
+									</svg>
+								</a>
+							</li>
+							<li class="header-menu__item"><a href="#" class="header-menu__link">Products</a></li>
+							<li class="header-menu__item"><a href="#" class="header-menu__link">About</a></li>
+						</ul>
+						<a data-toggle="collapse" href="#mobile-menu" role="button" aria-expanded="true" aria-controls="mobile-menu" class="header-m-menu">
+							<svg role="img" title="Home" class="header-m-menu__icon">
+								<use xlink:href="#icon-mobile-menu" />
+							</svg>
+						</a>
+						<a href="#" :class="{'btn--colored': isSelectedAuthors, 'btn--transparent' : !isSelectedAuthors }" class="header__button btn">
+							Request
+							<b class="btn__counter">{{countSelectedAuthors}}</b>
+						</a>
+
+					</div>
+				</nav>
+				<nav id="mobile-menu" class="mobile-menu" style="display: none;">
+					<ul class="mobile-menu__items js-accordion">
+						<li class="mobile-menu__item"><a href="#" class="mobile-menu__link">Products</a></li>
+						<li class="mobile-menu__item"><a href="#"  class="mobile-menu__link">About</a></li>
+						<li class="mobile-menu__item">
+							<a href="#" :class="{'mobile-menu__authors--empty' : !isSelectedAuthors}" class="mobile-menu__link mobile-menu__authors">
+								Request
+								<b class="btn__counter">{{countSelectedAuthors}}</b>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</header>
+			<main class="page">
+				<section class="search-panel">
+					<section class="search-panel__top">
+						<div class="container">
+							<find-item 
+								v-bind:searchtext="searchFieldValue"
+								@dosearch ="doSearch">
+							</find-item>
+							<nav class="search-panel__sort">
+								<p class="search-panel__label">Sort by</p>
+								<ul class="search-panel__options panel-options">
+									<sort-item
+										v-for="item in sortOptions"
+										v-bind:name="item"
+										v-bind:key="item"
+										@select="selectSortType"
+										v-bind:selected-item="selectedSortItem">
+									</sort-item>
+								</ul>
+							</nav>
+						</div>
+					</section>
+					<section class="search-panel__bottom">
+						<div class="container">
+							<div class="search-panel__label search-panel__label--wide">Select</div>
+							<ul class="search-panel__tags panel-tags">
+								<filter-item
+									v-for="filter in filterOptions"
+									v-bind:key="filter.id"
+									v-bind:value="filter.value"
+									v-bind:id="filter.id"
+									v-bind:selectedfilter="selectedFilterOptions"
+									@select="selectFilters">
+								</filter-item>
+							</ul>
+						</div>
+					</section>
+				</section>
+				
+				<div style="position: relative;">
+					<author-info-list 
+						@change="changedSelectedAuthors" 
+						:imageurl="imageUrl" 
+						:sortby="selectedSortItem" 
+						:searchvalue="searchFieldValue" 
+						:selectedfilter="selectedFilterOptions" >
+					</author-info-list>
+				</div>
+				<script type="text/x-template" id="author-list-template">
+					<section class="container is-loading__element">
+						<author v-for="author in orderedAuthors" 
+							v-bind:id="author.id" 
+							v-bind:name="author.name"
+							v-bind:city="author.city"
+							v-bind:description="author.description"
+							v-bind:phoneNumber="author.phoneNumber"
+							v-bind:email="author.email"
+							v-bind:toDofilters="author.toDofilters"
+							v-bind:photoUrl="author.photoUrl"
+							v-bind:key="author.id"
+							v-bind:selectedauthors="selectedAuthors"
+							v-bind:filter="filter"
+							@select="selectAuthor">
+						</author>
+					</section>
+				</script>
+				<script type="text/x-template" id="author-card-template">
+					<section class="author-short">
+						<div class="author-short__logo">
+							<img :src="photoUrl" v-bind:alt="name" class="author-short__logo-img" />
+						</div>
+						<div class="author-short__info">
+							<h2 class="author-short__name"><a href="#">{{name}}</a></h2>
+							<p class="author-short__location">
+								<svg role="img" title="Location" class="author-short__info-icon">
+									<use xlink:href="#icon-mark" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+								</svg>
+								{{city}}
+							</p>
+							<p class="author-short__phone">
+								<svg role="img" title="Phone" class="author-short__info-icon">
+									<use xlink:href="#icon-phone" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+								</svg>
+								<a href="tel:${phoneNumber}">{{phoneNumber}}</a>
+							</p>
+							<p class="author-short__mail">
+								<svg role="img" title="Mail" class="author-short__info-icon">
+									<use xlink:href="#icon-mail" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+								</svg>
+								<a href="mailto:${email}">{{email}}</a>
+							</p>
+							<p class="author-short__description">{{description}}</p>
+							<ul class="author-short__labels tag-list">
+								<li v-for="filter in toDofilters" class="tag-list__tag"> {{filter}}</li>
+							</ul>
+						</div> 
+						<div class="author-short__actions">
+							<button @click="select" :class="{'btn--colored btn--v author-short__button--selected' : isSelected }"  class="author-short__button btn ">
+								Request
+							</button>
+							<ul class="author-short author-icons">
+								<li title="Projektien määrä" class="author-icons__item">
+									<svg role="img" title="" class="author-icons__icon">
+										<use xlink:href="#icon-home2" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+									</svg>
+								</li>
+							</ul>
+						</div>
+					</section> 
+				</script>
+				<script type="text/x-template" id="sort_item_template">
+					<li class="panel-options__item">
+						<a href="#" @click="select" :class="{'panel-options__link--active': isSelected}" class="panel-options__link">{{name}}</a>
+					</li>
+				</script>
+				<script type="text/x-template" id="filter_item_template">
+					<li class="panel-tags__item"> <a href="#" @click="select" :class="{'btn--colored panel-tags__link--active': isSelected }"class="panel-tags__link btn btn--round">{{value}}</a></li>
+				</script>
+				<script type="text/x-template" id="find_item_template">
+					<nav>
+						<p class="search-panel__label search-panel__label--wide">Serch</p>
+						<div class="search-panel__input-wrap">
+							<input type="text" name="query" v-model="value" @change="dosearch" class="search-panel__input" placeholder="type shearch value">
+							<button class="search-panel__search" @click="dosearch"></button>
+						</div>
+					</nav>
+				</script>
+
+			</main>
+			<footer class="footer">
+				<div class="container">
+					<article class="footer__article">
+						<h2 class="footer__header">You are welcome!</h2>
+						<p class="footer__text">We are glad to be usefull for you.</p><a href="#" class="footer__link footer__link--more">Contact us</a>
+					</article>
+					<ul class="footer__list footer__list--wide">
+						<li class="footer__list-item">
+							<h2 class="footer__header">Overview</h2>
+						</li>
+							<li class="footer__list-item"><a href="#" class="footer__link">About</a></li>
+							<li class="footer__list-item"><a href="#" class="footer__link">Contacts</a></li>
+					</ul>
+
+					<ul class="footer__list footer__list--narrow">
+						<li class="footer__list-item">
+							<h2 class="footer__header"></h2>
+						</li>
+					</ul>
+					<small class="footer-copy">	© 2020. WoodLine studio. All Rights Reserved. </small>
+				</div>
+			</footer>
+		</section>
+        <!-- https://vuejs.org/v2/guide/list.html#key -->
+        <script src="index.js"></script>
+		<?xml version="1.0" encoding="utf-8"?>
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+			<symbol viewBox="0 0 17.97 16.04" id="icon-home"><title>icon-home</title><path data-name="icon home" d="M17.74 8.23l-8-7.91a1 1 0 0 0-1.41 0l-8 7.91c-.54.43-.36.78.21.78h1.67v6.2c0 .44 0 .8.82.8h3.94V9.82h4v6.19h4.13c.61 0 .63-.36.63-.8v-6.2h1.67c.57 0 .75-.35.34-.78z" fill="#fff"/></symbol>
+			<symbol viewBox="0 0 40.7 33.2" id="icon-mobile-menu"><path d="M0 0h40.7v7.7H0zm0 25.5h40.7v7.7H0zm0-12.7h40.7v7.7H0z"/></symbol>
+			<symbol id="icon-home_new" x="0px" y="0px" viewBox="0 0 460.298 460.297" xml:space="preserve">
+				<g>
+					<g>
+						<path d="M230.149,120.939L65.986,256.274c0,0.191-0.048,0.472-0.144,0.855c-0.094,0.38-0.144,0.656-0.144,0.852v137.041
+							c0,4.948,1.809,9.236,5.426,12.847c3.616,3.613,7.898,5.431,12.847,5.431h109.63V303.664h73.097v109.64h109.629
+							c4.948,0,9.236-1.814,12.847-5.435c3.617-3.607,5.432-7.898,5.432-12.847V257.981c0-0.76-0.104-1.334-0.288-1.707L230.149,120.939
+							z" fill="#fff"/>
+						<path d="M457.122,225.438L394.6,173.476V56.989c0-2.663-0.856-4.853-2.574-6.567c-1.704-1.712-3.894-2.568-6.563-2.568h-54.816
+							c-2.666,0-4.855,0.856-6.57,2.568c-1.711,1.714-2.566,3.905-2.566,6.567v55.673l-69.662-58.245
+							c-6.084-4.949-13.318-7.423-21.694-7.423c-8.375,0-15.608,2.474-21.698,7.423L3.172,225.438c-1.903,1.52-2.946,3.566-3.14,6.136
+							c-0.193,2.568,0.472,4.811,1.997,6.713l17.701,21.128c1.525,1.712,3.521,2.759,5.996,3.142c2.285,0.192,4.57-0.476,6.855-1.998
+							L230.149,95.817l197.57,164.741c1.526,1.328,3.521,1.991,5.996,1.991h0.858c2.471-0.376,4.463-1.43,5.996-3.138l17.703-21.125
+							c1.522-1.906,2.189-4.145,1.991-6.716C460.068,229.007,459.021,226.961,457.122,225.438z" fill="#fff"/>
+					</g>
+				</g>
+
+			</symbol>
+			<symbol id="icon-home2" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+				<g>
+					<g>
+						<path d="M506.555,208.064L263.859,30.367c-4.68-3.426-11.038-3.426-15.716,0L5.445,208.064
+							c-5.928,4.341-7.216,12.665-2.875,18.593s12.666,7.214,18.593,2.875L256,57.588l234.837,171.943c2.368,1.735,5.12,2.57,7.848,2.57
+							c4.096,0,8.138-1.885,10.744-5.445C513.771,220.729,512.483,212.405,506.555,208.064z" fill="#674d37"/>
+					</g>
+				</g>
+				<g>
+					<g>
+						<path d="M442.246,232.543c-7.346,0-13.303,5.956-13.303,13.303v211.749H322.521V342.009c0-36.68-29.842-66.52-66.52-66.52
+							s-66.52,29.842-66.52,66.52v115.587H83.058V245.847c0-7.347-5.957-13.303-13.303-13.303s-13.303,5.956-13.303,13.303v225.053
+							c0,7.347,5.957,13.303,13.303,13.303h133.029c6.996,0,12.721-5.405,13.251-12.267c0.032-0.311,0.052-0.651,0.052-1.036v-128.89
+							c0-22.009,17.905-39.914,39.914-39.914s39.914,17.906,39.914,39.914v128.89c0,0.383,0.02,0.717,0.052,1.024
+							c0.524,6.867,6.251,12.279,13.251,12.279h133.029c7.347,0,13.303-5.956,13.303-13.303V245.847
+							C455.549,238.499,449.593,232.543,442.246,232.543z" fill="#674d37"/>
+					</g>
+				</g>
+			</symbol>
+			<symbol viewBox="0 0 18 11" id="icon-mail"><title>icon-mail</title><path d="M.6 1l7.5 3.85a2.26 2.26 0 0 0 1.81 0L17.41 1c.49-.25 1-1 0-1H.55C-.36 0 .11.78.6 1zm17 1.9L9.91 6.75a2.26 2.26 0 0 1-1.81 0L.39 2.93c-.38-.2-.38.07-.38.2v7a1.14 1.14 0 0 0 1 .87h16a1.14 1.14 0 0 0 1-.91v-7c0-.17 0-.4-.39-.2z" fill="#3a3f6d"/></symbol>
+			<symbol viewBox="0 0 10 16" id="icon-mark"><title>icon-mark</title><path d="M5 0a5 5 0 0 0-5 5c0 4.77 5 11 5 11s5-6.23 5-11a5 5 0 0 0-5-5zm0 7.76a2.7 2.7 0 1 1 2.7-2.7A2.7 2.7 0 0 1 5 7.76z" fill="#3a3f6d"/></symbol>
+			<symbol viewBox="0 0 10.02 14" id="icon-phone"><title>icon-phone</title><path d="M3.89 6.32c.86-1.49 1.92-3 2.6-2.58 1 .56 1.63 1.1 3-.71S9.24.66 8.29.11s-4.08 1-6.39 5.05-2.27 7.43-1.18 8.06 2.2 1.6 3.11-.46.16-2.35-.84-2.91c-.71-.39 0-2.05.9-3.53z" fill="#3a3f6d"/></symbol>
+			<symbol viewBox="0 0 14 16.05" id="icon-house"><title>icon-house</title><path data-name="projects copy" d="M14 5.87v9.62a.54.54 0 0 1-.14.39.49.49 0 0 1-.37.15h-4a.49.49 0 0 1-.37-.15.54.54 0 0 1-.12-.39V9H5v6.48a.54.54 0 0 1-.14.39.49.49 0 0 1-.37.15h-4a.46.46 0 0 1-.34-.12.54.54 0 0 1-.15-.41V5.87a.53.53 0 0 1 .17-.42L6.55.12a.48.48 0 0 1 .63 0l6.62 5.33a.49.49 0 0 1 .2.42z" fill="#c7c7c7"/></symbol>
+		</svg>
+		
+    </body>
+</html>
